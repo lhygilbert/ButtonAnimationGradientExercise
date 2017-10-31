@@ -51,15 +51,32 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         view.backgroundColor = .white
+        view.setUpGradientBackground(colorOne: .darkGray, colorTwo: .lightGray)
         setupView()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        let startColors: [UIColor] = [.red, .blue, .green]
+        let endColors: [UIColor] = [.orange, UIColor(red: 92/255, green: 152/255, blue: 255/255, alpha: 1), .cyan]
+        
+        for i in 0..<startColors.count {
+            guard let sV = stackView else {
+                continue
+            }
+            
+            sV.arrangedSubviews[i].setUpGradientBackground(colorOne: startColors[i], colorTwo: endColors[i])
+        }
+    }
 
+    var stackView: UIStackView?
     private func setupView() {
-        let stackView = UIStackView(arrangedSubviews: [pulseButton, flashButton, shakeButton])
-        stackView.axis = .vertical
-        stackView.distribution = .equalCentering
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stackView)
+        stackView = UIStackView(arrangedSubviews: [pulseButton, flashButton, shakeButton])
+        stackView?.axis = .vertical
+        stackView?.distribution = .equalCentering
+        stackView?.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(stackView!)
         
         NSLayoutConstraint.activate([
             pulseButton.widthAnchor.constraint(equalToConstant: 200),
@@ -71,10 +88,10 @@ class ViewController: UIViewController {
             shakeButton.widthAnchor.constraint(equalToConstant: 200),
             shakeButton.heightAnchor.constraint(equalToConstant: 45),
             
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            stackView.widthAnchor.constraint(equalToConstant: 200),
-            stackView.heightAnchor.constraint(equalToConstant: 300)
+            stackView!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView!.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            stackView!.widthAnchor.constraint(equalToConstant: 200),
+            stackView!.heightAnchor.constraint(equalToConstant: 300)
         ])
     }
     
@@ -88,6 +105,19 @@ class ViewController: UIViewController {
     
     @objc func handleShake(_ sender: UIButton) {
         sender.shake()
+    }
+}
+
+extension UIView {
+    func setUpGradientBackground(colorOne : UIColor, colorTwo: UIColor) {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = self.bounds
+        gradientLayer.colors = [colorOne.cgColor, colorTwo.cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        
+        layer.insertSublayer(gradientLayer, at: 0)
     }
 }
 

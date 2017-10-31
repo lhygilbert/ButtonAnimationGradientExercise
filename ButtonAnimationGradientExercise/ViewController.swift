@@ -55,12 +55,13 @@ class ViewController: UIViewController {
         setupView()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    let startColors: [UIColor] = [.red, .blue, .green]
+    let endColors: [UIColor] = [.orange, UIColor(red: 92/255, green: 152/255, blue: 255/255, alpha: 1), .cyan]
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        let startColors: [UIColor] = [.red, .blue, .green]
-        let endColors: [UIColor] = [.orange, UIColor(red: 92/255, green: 152/255, blue: 255/255, alpha: 1), .cyan]
-        
+        stackView?.layoutSubviews()
         for i in 0..<startColors.count {
             guard let sV = stackView else {
                 continue
